@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecnu.easybook.easybookstockservice.mapper.AdminMapper" >
+    <resultMap id="BaseResultMap" type="com.ecnu.easybook.easybookstockservice.DO.Admin" >
+        <id column="id" property="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="admin_name" property="name" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, admin_name, password
+    </sql>
+
+    <select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM admins
+        WHERE id = #{id}
+    </select>
+
+    <select id="queryByNameAndPassword" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM admins
+        WHERE admin_name = #{name} AND password = #{password}
+    </select>
+
+
+    <insert id="insert" parameterType="com.ecnu.easybook.easybookstockservice.DO.Admin" >
+       INSERT INTO
+       		admins
+       		(admin_name, password)
+       	VALUES
+       		(#{name}, #{password})
+    </insert>
+
+    <update id="update" parameterType="com.ecnu.easybook.easybookstockservice.DO.Admin" >
+        UPDATE
+        admins
+        SET
+        <if test="name != null">admin_name = #{nickname},</if>
+        <if test="password != null">password = #{password},</if>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long" >
+       DELETE FROM
+       		 admins
+       WHERE
+       		 id =#{id}
+    </delete>
+
+</mapper>

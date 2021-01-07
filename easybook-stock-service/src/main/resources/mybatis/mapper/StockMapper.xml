@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecnu.easybook.easybookstockservice.mapper.StockMapper" >
+    <resultMap id="BaseResultMap" type="com.ecnu.easybook.easybookstockservice.DO.Stock" >
+        <id column="id" property="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="book_id" property="bid" jdbcType="BIGINT" javaType="Long"/>
+        <result column="cnt" property="cnt" jdbcType="INTEGER" javaType="Integer"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, book_id, cnt
+    </sql>
+
+    <select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM stock
+        WHERE id = #{id}
+    </select>
+
+
+    <select id="getOneByBID" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM stock
+        WHERE bid = #{bid}
+    </select>
+
+
+    <update id="updateByBID" >
+        update from stock
+        set cnt = #{cnt}
+        where bid = #{bid}
+    </update>
+
+
+    <insert id="addOne" parameterType="com.ecnu.easybook.easybookstockservice.DO.Stock" >
+       INSERT INTO
+       		stock
+       		(bid, cnt)
+       	VALUES
+       		(#{bid}, #{cnt})
+    </insert>
+
+    <update id="update" parameterType="com.ecnu.easybook.easybookstockservice.DO.Stock" >
+        UPDATE
+        stock
+        SET
+        <if test="bid != null">bid = #{bid},</if>
+        <if test="cnt != null">cnt = #{cnt},</if>
+        WHERE
+        id = #{id}
+    </update>
+
+    <update id="decreaseStock">
+        UPDATE
+        stock
+        SET
+        cnt = cnt - 1
+        WHERE
+        bid = #{bid} AND cnt > 0
+    </update>
+
+    <update id="increaseStock">
+        UPDATE
+        stock
+        SET
+        cnt = cnt + 1
+        WHERE
+        bid = #{bid}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long" >
+       DELETE FROM
+       		 stock
+       WHERE
+       		 id =#{id}
+    </delete>
+
+</mapper>

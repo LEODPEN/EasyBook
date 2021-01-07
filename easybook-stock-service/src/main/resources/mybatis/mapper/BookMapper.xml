@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecnu.easybook.easybookstockservice.mapper.BookMapper" >
+    <resultMap id="BaseResultMap" type="com.ecnu.easybook.easybookstockservice.DO.Book" >
+        <id column="id" property="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+        <result column="desc" property="desc" jdbcType="VARCHAR" />
+        <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+        <result column="total_cnt" property="totalCnt" jdbcType="INTEGER" javaType="java.lang.Integer" />
+        <result column="price" property="price" jdbcType="VARCHAR" />
+        <result column="place" property="place" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" javaType="java.time.LocalDateTime"/>
+    </resultMap>
+
+<!--    private Long id;-->
+
+<!--    private String bookName;-->
+
+<!--    private String desc;-->
+
+<!--    // 图片链接【存储】-->
+<!--    private String picUrl;-->
+
+<!--    // 总库存-->
+<!--    private int totalCnt;-->
+
+<!--    // 单价-->
+<!--    private String price;-->
+
+<!--    // 图书存放地点-->
+<!--    private String place;-->
+
+<!--    private LocalDateTime updateTime;-->
+    <sql id="Base_Column_List" >
+        id, book_name, `desc`, pic_url, total_cnt, price, place,update_time
+    </sql>
+
+    <select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM book
+        WHERE id = #{id}
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(id) from book
+    </select>
+
+    <select id="searchByName1" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM book
+        WHERE `book_name` = #{bookName}
+    </select>
+
+    <select id="searchByName2" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM book
+        WHERE `book_name` like "%" + #{bookName} + "%"
+    </select>
+
+    <!--    https://www.jianshu.com/p/ead491db9749 limit 与 order by的混用陷阱
+     保证每个人看到的最新上架都是一样的 -->
+    <select id="loadNewest" resultMap="BaseResultMap" parameterType="int">
+        SELECT
+        *
+        FROM book
+        ORDER BY update_time,id DESC
+        LIMIT #{size}
+    </select>
+
+    <select id="loadAllBooksPageable" resultMap="BaseResultMap" >
+        select
+        *
+        from book
+        order by id asc
+        limit ${page}, #{size}
+    </select>
+
+    <select id="loadAllBooks" resultMap="BaseResultMap" >
+        select
+        *
+        from book
+        order by id asc
+    </select>
+
+
+    <insert id="insert" parameterType="com.ecnu.easybook.easybookstockservice.DO.Book" >
+       INSERT INTO
+       		book
+       		(book_name, `desc`, pic_url, total_cnt, price, place, update_time)
+       	VALUES
+       		(#{bookName}, #{desc}, #{picUrl}, #{totalCnt}, #{price}, #{place}, #{updateTime})
+    </insert>
+
+    <update id="update" parameterType="com.ecnu.easybook.easybookstockservice.DO.Book" >
+        UPDATE
+        book
+        SET
+        <if test="bookName != null">book_name = #{bookName},</if>
+        <if test="desc != null">`desc` = #{desc},</if>
+        <if test="picUrl != null">pic_url = #{picUrl},</if>
+        <if test="totalCnt != null">total_cnt = #{totalCnt},</if>
+        <if test="price != null">price = #{price},</if>
+        <if test="place != null">place = #{place},</if>
+        <if test="updateTime != null">update_time = #{updateTime},</if>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long" >
+       DELETE FROM
+       		 book
+       WHERE
+       		 id = #{id}
+    </delete>
+
+</mapper>

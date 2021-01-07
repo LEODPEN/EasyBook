@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecnu.easybook.easybookstockservice.mapper.UserMapper" >
+    <resultMap id="BaseResultMap" type="com.ecnu.easybook.easybookstockservice.DO.Reader" >
+        <id column="id" property="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="stu_id" property="stuId" jdbcType="BIGINT" />
+        <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="register_date" property="registerDate" jdbcType="TIMESTAMP" javaType="java.time.LocalDate"/>
+        <result column="lastLogin_date" property="lastLoginDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, stu_id, nickname, password, register_date, lastLogin_date
+    </sql>
+
+    <select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <select id="getByUIDAndPW" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM users
+        WHERE stu_id = #{uid} AND password = #{password}
+    </select>
+
+    <select id="getByStuId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        SELECT * FROM users where stu_id = #{stuId}
+    </select>
+
+    <insert id="insert" parameterType="com.ecnu.easybook.easybookstockservice.DO.Reader" >
+       INSERT INTO
+       		users
+       		(stu_id, nickname, password, register_date, lastLogin_date)
+       	VALUES
+       		(#{stuId}, #{nickname}, #{password}, #{registerDate}, #{lastLoginDate})
+    </insert>
+
+    <update id="update" parameterType="com.ecnu.easybook.easybookstockservice.DO.Reader" >
+        UPDATE
+        users
+        SET
+        <if test="nickname != null">uickname = #{nickname},</if>
+        <if test="password != null">password = #{password},</if>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long" >
+       DELETE FROM
+       		 users
+       WHERE
+       		 id =#{id}
+    </delete>
+
+</mapper>

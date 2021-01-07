@@ -1,0 +1,72 @@
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/easybook?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=treUnicode=true&characterEncoding=utf-8&useSSL=true
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 8
+        # 最大阻塞等待时间
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+  dubbo:
+    application:
+      name: easybook-server
+    registry:
+      address: zookeeper://127.0.0.1:2181
+      protocol: zookeeper
+#    monitor:
+#      protocol: registry
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    consumer:
+      properties:
+        group:
+          id: defaultConsumerGroup
+        session:
+          timeout:
+            ms: 120000
+        request:
+          timeout:
+            ms: 180000
+      enable-auto-commit: true
+      auto-commit-interval: 1000
+      # 当kafka中没有初始offset或offset超出范围时将自动重置offset
+      # earliest:重置为分区中最小的offset;
+      # latest:重置为分区中最新的offset(消费分区中新产生的数据);
+      # none:只要有一个分区不存在已提交的offset,就抛出异常;
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      missing-topics-fatal: false # 消费端监听的topic不存在时，项目启动会报错(关掉)
+    producer:
+      retries: 3
+      acks: 1 # 应答级别:多少个分区副本备份完成时向生产者发送ack确认(可选0、1、all/-1)
+      batch-size: 16384
+      properties:
+        linger:
+          ms: 0
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+  server:
+    port: 8081
+
+mybatis:
+  type-aliases-package: com.ecnu.easybook.easybookstockservice
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+server:
+  port: 8888

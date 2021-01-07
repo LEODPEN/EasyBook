@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecnu.easybook.easybookstockservice.mapper.ConfMapper" >
+    <resultMap id="BaseResultMap" type="com.ecnu.easybook.easybookstockservice.DO.Conf" >
+        <id column="id" property="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="is_selected" property="isSelected" jdbcType="BOOLEAN" javaType="boolean"/>
+        <result column="desc" property="desc" jdbcType="VARCHAR" />
+        <result column="busy_period" property="busyPeriod" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="loadByID" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        SELECT
+        *
+        FROM confs
+        WHERE id = #{id}
+    </select>
+
+    <select id="loadSelected" resultMap="BaseResultMap"  >
+        SELECT
+        *
+        FROM confs
+        WHERE is_selected is true
+    </select>
+
+    <select id="loadAll" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM confs
+    </select>
+
+    <insert id="insert" parameterType="com.ecnu.easybook.easybookstockservice.DO.Conf" >
+       INSERT INTO
+       		confs
+       		(is_selected, `desc`, busy_period)
+       	VALUES
+       		(#{isSelected}, #{desc}, #{busyPeriod})
+    </insert>
+
+    <update id="select" parameterType="java.lang.Long" >
+        UPDATE
+        confs
+        SET
+        is_selected = true
+        WHERE
+        id = #{id}
+    </update>
+
+    <update id="unselect" parameterType="java.lang.Long" >
+        UPDATE
+        confs
+        SET
+        is_selected = false
+        WHERE
+        id = #{id}
+    </update>
+
+    <update id="update" parameterType="com.ecnu.easybook.easybookstockservice.DO.Conf" >
+        UPDATE
+        confs
+        SET
+<!--        <if test="isSelected != null">is_selected = #{isSelected},</if>-->
+        <if test="desc != null">`desc` = #{desc},</if>
+        <if test="busyPeriod != null">busy_period = #{busyPeriod},</if>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long" >
+       DELETE FROM
+       		 confs
+       WHERE
+       		 id =#{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecnu.easybook.easybookstockservice.mapper.DealMapper" >
+    <resultMap id="BaseResultMap" type="com.ecnu.easybook.easybookstockservice.DO.Deal" >
+        <id column="id" property="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="book_id" property="bookId" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="stu_id" property="stuId" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" javaType="int"/>
+        <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" javaType="java.time.LocalDateTime"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" javaType="java.time.LocalDateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, user_id, book_id, stu_id, username, book_name, status, created_time, update_time
+    </sql>
+
+    <select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM deal
+        WHERE id = #{id}
+    </select>
+
+    <select id="getCountByUID" parameterType="java.lang.Long" resultType="int">
+        SELECT
+        count(id)
+        FROM deal
+        where user_id = #{UID}
+    </select>
+
+    <select id="queryByUID" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        *
+        FROM deal
+        WHERE user_id = #{UID}
+    </select>
+
+    <select id="queryByUIDPageable" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM deal
+        WHERE user_id = #{UID}
+        LIMIT #{page}, #{size}
+    </select>
+
+    <select id="queryBySTUID" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM deal
+        WHERE user_id = #{STUID}
+    </select>
+
+    <select id="queryByBID" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        SELECT
+        *
+        FROM deal
+        WHERE book_id = #{BID}
+    </select>
+
+    <select id="queryByUIDAndBID" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM deal
+        WHERE user_id = #{UID} AND book_id = #{BID}
+    </select>
+
+    <select id="queryByBIDAndStatus" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM deal
+        WHERE book_id = #{BID} AND status = #{status}
+    </select>
+
+    <select id="queryByUIDAndStatus" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM deal
+        WHERE user_id = #{UID} AND status = #{status}
+    </select>
+
+    <select id="queryByUIDAndStatusPageable" resultMap="BaseResultMap" >
+        SELECT
+        *
+        FROM deal
+        WHERE user_id = #{UID} AND status = #{status}
+        LIMIT #{page}, #{size}
+    </select>
+
+    <select id="getCountByUIDAndStatus" resultType="int">
+        SELECT
+        count(id)
+        FROM deal
+        WHERE user_id = #{UID} AND status = #{status}
+    </select>
+
+    <select id="loadAllDeals" resultMap="BaseResultMap" >
+        select * from deal order by id asc limit ${page}, #{size}
+    </select>
+
+<!--    如果失败了还是得有展示的，所以这里status不写死-->
+    <insert id="makeDeal" parameterType="com.ecnu.easybook.easybookstockservice.DO.Deal" >
+       INSERT INTO
+       		deal
+       		(user_id, book_id, stu_id, username, book_name, status)
+       	VALUES
+       		(#{userId}, #{bookId}, #{stuId}, #{username}, #{bookName}, #{status})
+    </insert>
+
+    <update id="updateStatus" >
+        UPDATE
+        deal
+        SET
+        status = #{status}
+        WHERE
+        id = #{id}
+    </update>
+
+
+<!--    一般不会用到这个-->
+    <delete id="delete" parameterType="java.lang.Long" >
+       DELETE FROM
+       		 deal
+       WHERE
+       		 id =#{id}
+    </delete>
+
+</mapper>
