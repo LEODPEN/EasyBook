@@ -3,6 +3,7 @@ package com.ecnu.easybook.easybookstockservice.api.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ecnu.easybook.easybookstockservice.DO.Book;
 import com.ecnu.easybook.easybookstockservice.api.BookService;
+import com.ecnu.easybook.easybookstockservice.cacheservice.BookCacheJobService;
 import com.ecnu.easybook.easybookstockservice.cacheservice.BookStockCacheJobService;
 import com.ecnu.easybook.easybookstockservice.config.ConstantConfig;
 import com.ecnu.easybook.easybookstockservice.mapper.BookMapper;
@@ -39,6 +40,9 @@ public class BookServiceImpl implements BookService {
     @Resource(name = "BookStockCacheJobService")
     private BookStockCacheJobService stockCacheService;
 
+    @Resource(name = "BookCacheJobService")
+    private BookCacheJobService bookCacheJobService;
+
     @Autowired
     public BookServiceImpl(BookMapper bookMapper) {
         this.bookRepository = bookMapper;
@@ -51,8 +55,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public EBResponse<Book> findCertainBook(Long id) {
         try {
-            // todo 先查本地缓存 【单独来一个可触发的服务来构建本地缓存】
-            return EBResponse.success(bookRepository.getOne(id));
+            // 先查本地缓存
+            // 无则从db中取，不反哺到本地缓存
+            return EBResponse.success(bookCacheJobService.getById(id));
         }catch (Exception e) {
             // 打印log，日志还是需要打一下的。。。
             log.error("BookService -> findCertainBook id : {} :" + e.getMessage(), id);
@@ -89,6 +94,7 @@ public class BookServiceImpl implements BookService {
         try {
             if (book != null) {
                 bookRepository.update(book);
+                bookCacheJobService.update(book);
             }
         }catch (Exception e) {
             log.error("BookService -> updateOneBook + id :{}:" + e.getMessage(), book.getId());
@@ -101,6 +107,7 @@ public class BookServiceImpl implements BookService {
     public EBResponse<Boolean> deleteOneBook(Long id) {
         try {
             bookRepository.delete(id);
+            bookCacheJobService.remove(id);
             return EBResponse.success(Boolean.TRUE);
         }catch (Exception e) {
             log.error("BookService -> deleteOneBook :" + e.getMessage());

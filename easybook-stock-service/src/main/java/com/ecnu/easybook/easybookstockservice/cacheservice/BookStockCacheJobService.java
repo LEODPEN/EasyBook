@@ -56,10 +56,9 @@ public class BookStockCacheJobService {
                 // 没有则去查db
                 Stock stock = stockRepository.getOneByBID(bid);
                 if  (stock == null) return null;
-                // 获得
                 stock_cnt = stock.getCnt();
                 // 立即反哺到缓存【check twice】
-                setStockIfAbsent(bid, stock_cnt, 18);
+                setStockIfAbsent(bid, stock_cnt, ConstantConfig.STOCK_CACHE_DURATION_HOURS);
             }
         }
         return stock_cnt;

@@ -18,6 +18,8 @@ public interface ConstantConfig {
 
     int DEFAULT_BOOK_CACHE_SIZE = 500; // 从deal日志表排序去重来筛选
 
+    int STOCK_CACHE_DURATION_HOURS = 18;
+
     /**
      * 本地缓存
      */

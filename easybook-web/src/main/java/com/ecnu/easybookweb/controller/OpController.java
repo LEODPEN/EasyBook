@@ -65,7 +65,6 @@ public class OpController {
     public ResultVO makeDeal(@RequestBody @NotNull DealForm dealForm) {
         Deal deal = new Deal();
         BeanUtils.copyProperties(dealForm, deal);
-//        deal.setStatus(DealStatus.PROCESS.getCode());
         if (isBusy()) {
             // mq削峰
             kafkaTemplate.send(ConstantConfig.TOPIC, deal);

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="false">
+    <defaultCache
+            eternal="false"
+            maxElementsInMemory="1000"
+            overflowToDisk="false"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="600"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <!--     overflowToDisk: 当缓存达到maxElementsInMemory值是,是否允许溢出到磁盘-->
+<!--    diskPersistent="false"  : 磁盘缓存在JVM重新启动时是否保持(默认为false)-->
+<!--    https://juejin.cn/post/6844904122030751758-->
+    <cache
+            name="books"
+            eternal="false"
+            maxElementsInMemory="1000"
+            diskstore="false"
+            overflowToDisk="false"
+            diskPersistent="false"
+            maxEntriesLocalDisk= "8000"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="86400"
+            memoryStoreEvictionPolicy="LRU" />
+
+</ehcache>

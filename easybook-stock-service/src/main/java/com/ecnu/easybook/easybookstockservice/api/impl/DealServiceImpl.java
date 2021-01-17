@@ -15,11 +15,11 @@ import com.ecnu.easybook.easybookstockservice.response.EBResponse;
 import com.ecnu.easybook.easybookstockservice.response.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -35,6 +35,9 @@ public class DealServiceImpl implements DealService {
     private final DealMapper dealRepository;
 
     private final StockMapper stockRepository;
+
+    @Resource
+    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Resource(name = "RedisLockService")
     private RedisLockService redisLockService;
@@ -161,6 +164,7 @@ public class DealServiceImpl implements DealService {
         }
         dealRepository.updateStatus(id, DealStatus.DONE.getCode());
         stockRepository.increaseStock(deal.getBookId());
+        kafkaTemplate.send(ConstantConfig.TOPIC2, String.valueOf(deal.getBookId()));
         return EBResponse.success(Boolean.TRUE);
     }
 

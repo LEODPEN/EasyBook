@@ -26,6 +26,10 @@ spring:
       protocol: zookeeper
 #    monitor:
 #      protocol: registry
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:ehcache/ehcache.xml
   kafka:
     bootstrap-servers: 127.0.0.1:9092
     consumer:
